@@ -1,0 +1,167 @@
+go atlas
+mesh space.mult=1
+
+# Define the x-mesh
+x.m loc=0.0 spac=0.05
+x.m loc=1.0 spac=0.05
+
+# Define the y-mesh with detailed sublayers for each region
+y.m loc=0.0 spac=0.01  # CAP layer (TC)
+y.m loc=0.040 spac=0.01  # Window layer (TC)
+y.m loc=0.065 spac=0.005  # First Emitter layer (TC)
+y.m loc=0.089 spac=0.01  # Second Emitter layer (TC)
+y.m loc=0.130 spac=0.01  # Third Emitter layer (TC)
+y.m loc=1.430 spac=0.05  # Base layer (TC)
+y.m loc=1.530 spac=0.01  # BSF layer (TC)
+y.m loc=1.555 spac=0.005  # p++ AlGaAs layer (TJ1)
+y.m loc=1.580 spac=0.005  # n++ GaInP layer (TJ1)
+y.m loc=1.600 spac=0.01  # Window layer (MC)
+y.m loc=1.620 spac=0.02  # Emitter layer (MC)
+y.m loc=1.760 spac=0.05  # Base layer (MC)
+y.m loc=5.080 spac=0.05  # BSF layer (MC)
+y.m loc=5.230 spac=0.01  # p-barrier layer (TJ2)
+y.m loc=5.250 spac=0.005  # p++ AlGaAs layer (TJ2)
+y.m loc=5.270 spac=0.005  # n GaAs layer (TJ2)
+y.m loc=5.320 spac=0.01  # n-barrier layer (TJ2)
+y.m loc=5.340 spac=0.05  # Buffer layer (BC)
+y.m loc=5.840 spac=0.05  # Nucleation layer (BC)
+y.m loc=5.890 spac=0.05  # Emitter layer (BC)
+y.m loc=6.290 spac=0.05  # Substrate layer (BC)
+
+#region definitions
+# Top Cell (TC)
+region num=1 mat=GaAs x.min=0 x.max=1.0 y.min=0.0 y.max=0.040  # CAP layer
+region num=2 mat=AlInP x.min=0 x.max=1.0 y.min=0.040 y.max=0.065  # Window layer
+region num=3 mat=GaInP x.min=0 x.max=1.0 y.min=0.065 y.max=0.089  # Emitter layer 1
+region num=4 mat=GaInP x.min=0 x.max=1.0 y.min=0.089 y.max=0.130  # Emitter layer 2
+region num=5 mat=GaInP x.min=0 x.max=1.0 y.min=0.130 y.max=1.430  # Base layer
+region num=6 mat=AlGaInP x.min=0 x.max=1.0 y.min=1.430 y.max=1.530  # BSF layer
+
+# Tunnel Junction 1 (TJ1)
+region num=7 mat=AlGaAs x.min=0 x.max=1.0 y.min=1.530 y.max=1.555  # p++ AlGaAs layer
+region num=8 mat=GaInP x.min=0 x.max=1.0 y.min=1.555 y.max=1.580  # n++ GaInP layer
+
+# Middle Cell (MC)
+region num=9 mat=GaInP x.min=0 x.max=1.0 y.min=1.580 y.max=1.600  # Window layer
+region num=10 mat=GaInAs x.min=0 x.max=1.0 y.min=1.600 y.max=1.760  # Emitter layer
+region num=11 mat=GaInAs x.min=0 x.max=1.0 y.min=1.760 y.max=5.080  # Base layer
+region num=12 mat=AlGaAs x.min=0 x.max=1.0 y.min=5.080 y.max=5.230  # BSF layer
+
+# Tunnel Junction 2 (TJ2)
+region num=13 mat=AlGaAs x.min=0 x.max=1.0 y.min=5.230 y.max=5.250  # p-barrier layer
+region num=14 mat=AlGaAs x.min=0 x.max=1.0 y.min=5.250 y.max=5.270  # p++ AlGaAs layer
+region num=15 mat=GaAs x.min=0 x.max=1.0 y.min=5.270 y.max=5.320  # n GaAs layer
+region num=16 mat=AlGaAs x.min=0 x.max=1.0 y.min=5.320 y.max=5.340  # n-barrier layer
+
+# Bottom Cell (BC)
+region num=17 mat=GaInAs x.min=0 x.max=1.0 y.min=5.340 y.max=5.840  # Buffer layer
+region num=18 mat=GaInP x.min=0 x.max=1.0 y.min=5.840 y.max=5.890  # Nucleation layer
+region num=19 mat=GaInAs x.min=0 x.max=1.0 y.min=5.890 y.max=6.290  # Emitter layer
+region num=20 mat=Ge x.min=0 x.max=1.0 y.min=6.290 y.max=6.290  # Substrate layer
+
+# Electrode Definitions
+electrode name=anode top
+electrode name=cathode bottom
+
+
+# Save the structure
+struct outfile=GaInP_GaInAs_Ge.str
+
+### Simulation Step 1: Finding Short-Circuit Current (Jsc) and Open-Circuit Voltage (Voc)
+
+go atlas
+mesh infile=GaInP_GaInAs_Ge.str
+
+# Doping profiles
+doping uniform n.type conc=2e18 reg=1   # CAP Layer
+doping uniform n.type conc=5e18 reg=2   # Window Layer
+doping uniform n.type conc=7e17 reg=3   # Emitter Layer
+doping uniform p.type conc=9e16 reg=4   # Base Layer
+doping uniform p.type conc=4e18 reg=5   # BSF Layer
+
+doping uniform p.type conc=6e19 reg=6   # TJ1 Anode Layer
+doping uniform n.type conc=1e19 reg=7   # TJ1 Cathode Layer
+
+doping uniform n.type conc=1e18 reg=8   # MC Window Layer
+doping uniform n.type conc=1e17 reg=9   # MC Emitter Layer
+doping uniform p.type conc=1e17 reg=10  # MC Base Layer
+doping uniform p.type conc=1e18 reg=11  # MC BSF Layer
+
+doping uniform p.type conc=5e19 reg=12  # TJ2 P-Barrier Layer
+doping uniform p.type conc=5e19 reg=13  # TJ2 Anode Layer
+doping uniform n.type conc=2e19 reg=14  # TJ2 Cathode Layer
+doping uniform n.type conc=4e18 reg=15  # TJ2 N-Barrier Layer
+
+doping uniform n.type conc=1e18 reg=16  # BC Buffer Layer
+doping uniform n.type conc=1e18 reg=17  # BC Nucleation Layer
+doping uniform p.type conc=1e18 reg=18  # BC Emitter/Substrate Layer
+
+### Material Parameters
+material mat=GaAs sopra=Gaas.nk
+material mat=InGaP sopra=ingap.nk
+material mat=AlGaAs sopra=Algaas7.nk
+material mat=InGaAs sopra=ingaas.nk
+material mat=Ge sopra=ge.nk
+
+# Optical models and recombination models
+models fermi optr srh auger print
+method newton
+
+# Initialize the solution and solve
+solve init
+
+# Run I-V simulation to find Voc and Jsc
+log outf=GaInP_GaInAs_Ge_dark.log
+solve vanode=0.0 name=anode vstep=0.02 vfinal=2.0
+log off
+
+# Simulate under illumination (AM1.5G)
+beam num=1 am1.5g
+solve init
+solve prev
+
+log outf=GaInP_GaInAs_Ge_light.log
+solve vanode=0.0 name=anode vstep=0.02 vfinal=2.0
+log off
+
+# Overlay the dark and light I-V characteristics
+tonyplot-overlay GaInP_GaInAs_Ge_dark.log GaInP_GaInAs_Ge_light.log
+
+### Extract Key Parameters
+extract init infile="GaInP_GaInAs_Ge_light.log"
+extract name="Jsc" y.val from curve(v."anode", i."anode") where x.val=0.0
+extract name="Voc" x.val from curve(v."anode", i."anode") where y.val=0.0 
+extract name="P" curve(v."anode", (v."anode" * i."anode"*(-1))) outf="P.dat" 
+extract name="Pm" min(curve(v."anode", (v."anode" * i."anode")))
+extract name="Vm" x.val from curve(v."anode",(v."anode"*i."anode")) where y.val=$"Pm"
+extract name="Im" $"Pm"/$"Vm"
+extract name="FF" $"Pm"/($"Jsc"*$"Voc")*100
+extract name="Eff" (1e8*$Pm/(0.1))*100
+
+tonyplot P.dat
+
+### Simulation Step 2: Spectral Response
+
+go atlas
+mesh infile=GaInP_GaInAs_Ge.str
+
+# Initialize the solution for spectral response
+solve init
+
+# Set monochromatic light for spectral analysis
+beam num=1 x.origin=0.5 y.origin=-1.0 angle=90.0
+
+# Perform spectral response simulation
+solve init
+solve prev
+log outf=GaInP_GaInAs_Ge_spectral.log
+solve init 
+solve prev
+solve b1=1 beam=1 lambda=0.45 wstep=0.05 wfinal=3
+
+# Plot the spectral response
+tonyplot GaInP_GaInAs_Ge_spectral.log
+
+### Extract EQE and IQE
+extract init inf="GaInP_GaInAs_Ge_spectral.log"
+extract name="IQE" curve(elect."optical wavelength", \
