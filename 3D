@@ -1,0 +1,158 @@
+go atlas
+mesh space.mult=1
+
+# Define mesh
+x.m loc=0.0 spac=0.01
+x.m loc=1.0 spac=0.01
+y.m loc=0.0 spac=0.005
+y.m loc=0.040 spac=0.005  # CAP layer end
+y.m loc=0.065 spac=0.005  # Window layer end
+y.m loc=0.095 spac=0.005  # Emitter layers end
+y.m loc=0.165 spac=0.05    # Base layer end
+y.m loc=0.265 spac=0.05    # BSF layer end
+y.m loc=0.290 spac=0.01    # TJ1 Anode layer end
+y.m loc=0.315 spac=0.01    # TJ1 Cathode layer end
+y.m loc=0.355 spac=0.05    # Middle Cell Window layer end
+y.m loc=0.495 spac=0.05    # Middle Cell Emitter layer end
+y.m loc=0.827 spac=0.05    # Middle Cell Base layer end
+y.m loc=0.977 spac=0.05    # Middle Cell BSF layer end
+y.m loc=1.027 spac=0.05    # TJ2 p-barrier layer end
+y.m loc=1.057 spac=0.02    # TJ2 Anode layer end
+y.m loc=1.077 spac=0.02    # TJ2 Cathode layer end
+y.m loc=1.097 spac=0.05    # TJ2 n-barrier layer end
+y.m loc=1.147 spac=0.05    # Bottom Cell Buffer layer end
+y.m loc=1.197 spac=0.05    # Bottom Cell Nucleation layer end
+y.m loc=1.247 spac=0.05    # Bottom Cell Emitter layer end
+y.m loc=1.297 spac=0.05    # Bottom Cell Substrate layer end
+
+# Define regions
+#region definition
+
+########### TOP CELL ################
+
+# CAP layer
+region num=1 material=GaAs x.min=0 x.max=1.0 y.min=0 y.max=0.040 doping n+ conc=2e18 # [Si]
+# Window layer
+region num=2 material=AlInP x.min=0 x.max=1.0 y.min=0.040 y.max=0.065 doping n+ conc=5e18 # [Te]
+# Emitter layers
+region num=3 material=GaInP x.min=0 x.max=1.0 y.min=0.065 y.max=0.095 doping n+ conc=3e18 # [Te]
+region num=4 material=GaInP x.min=0 x.max=1.0 y.min=0.095 y.max=0.165 doping n+ conc=7e17 # [Te]
+region num=5 material=GaInP x.min=0 x.max=1.0 y.min=0.165 y.max=0.200 doping n+ conc=7e17 # [Si]
+# Base layer
+region num=6 material=GaInP x.min=0 x.max=1.0 y.min=0.200 y.max=0.265 doping p conc=9e16 # [Zn]
+# BSF layer
+region num=7 material=AlGaInP x.min=0 x.max=1.0 y.min=0.265 y.max=0.290 doping p conc=4e18 # [Zn]
+
+### Tunnel Junction 1 ###
+# Anode layer
+region num=8 material=AlGaAs x.min=0 x.max=1.0 y.min=0.290 y.max=0.315 doping p++ conc=6e19 # [C]
+# Cathode layer
+region num=9 material=GaInP x.min=0 x.max=1.0 y.min=0.315 y.max=0.355 doping n++ conc=1e19 # [Te]
+
+########### MIDDLE CELL ################
+
+# Window layer
+region num=10 material=GaInP x.min=0 x.max=1.0 y.min=0.355 y.max=0.495 doping n conc=1e18 # [Si]
+# Emitter layer
+region num=11 material=GaInAs x.min=0 x.max=1.0 y.min=0.495 y.max=0.827 doping n conc=1e17 # [Si]
+# Base layer
+region num=12 material=GaInAs x.min=0 x.max=1.0 y.min=0.827 y.max=0.977 doping p conc=1e17 # [Zn]
+# BSF layer
+region num=13 material=AlGaAs x.min=0 x.max=1.0 y.min=0.977 y.max=1.027 doping p conc=1e18 # [C]
+
+########### Tunnel Junction 2 ################
+
+# p-barrier layer
+region num=14 material=AlGaAs x.min=0 x.max=1.0 y.min=1.027 y.max=1.057 doping p+ conc=5e19 # [C]
+# Anode layer
+region num=15 material=AlGaAs x.min=0 x.max=1.0 y.min=1.057 y.max=1.077 doping p++ conc=5e19 # [C]
+# Cathode layer
+region num=16 material=GaAs x.min=0 x.max=1.0 y.min=1.077 y.max=1.097 doping n conc=2e19 # [Te]
+# n-barrier layer
+region num=17 material=AlGaAs x.min=0 x.max=1.0 y.min=1.097 y.max=1.147 doping n conc=4e18 # [Te]
+
+########### BOTTOM CELL ################
+
+# Buffer layer
+region num=18 material=GaInAs x.min=0 x.max=1.0 y.min=1.147 y.max=1.197 doping n conc=1e18 # [Si]
+# Nucleation layer
+region num=19 material=GaInP x.min=0 x.max=1.0 y.min=1.197 y.max=1.247 doping n conc=1e18 # [Si]
+# Emitter layer
+region num=20 material=Ge x.min=0 x.max=1.0 y.min=1.247 y.max=1.297 doping p++ conc=1e19 # [Ge]
+# Substrate layer
+region num=21 material=Ge x.min=0 x.max=1.0 y.min=1.297 y.max=1.347 doping p++ conc=1e19 # [Ge]
+
+# Define electrodes
+electrode name=anode top 
+electrode name=cathode bottom
+struct outfile=GaInP_GaInAs_Ge.str
+
+# First simulation: Dark I-V Characteristics
+go atlas
+mesh infile=GaInP_GaInAs_Ge.str
+
+models fermi optr
+method newton itlimit=40 maxtraps=20
+output opt.int band.temp con.band val.band charge polar.charge band.param e.mobility h.mobility u.srh u.radiative u.auger permi
+
+doping uniform p conc=9e16 reg=6
+doping uniform n conc=7e16 reg=8
+doping uniform n conc=1e19 reg=9
+doping uniform p conc=1e17 reg=12
+doping uniform n conc=5e18 reg=13
+doping uniform n conc=2e19 reg=16
+
+solve init
+solve prev
+log outf=GaInP_GaInAs_Ge_dark.log
+solve vanode=0.0 name=anode vstep=0.02 vfinal=2.0
+log off
+
+# Light I-V Characteristics
+beam num=1 am1.5g x.orig=0.5 y.orig=-2 angle=90
+solve init
+solve prev
+log outf=GaInP_GaInAs_Ge_light.log
+solve vanode=0.0 name=anode vstep=0.02 vfinal=2.0
+log off
+
+# Extract I-V Characteristics
+tonyplot-overlay GaInP_GaInAs_Ge_dark.log GaInP_GaInAs_Ge_light.log
+
+extract init infile="GaInP_GaInAs_Ge_light.log"
+extract name="Jsc" y.val from curve(v."anode", i."anode") where x.val=0.0
+extract name="Voc" x.val from curve(v."anode", i."anode") where y.val=0.0
+extract name="P" curve(v."anode", (v."anode" * i."anode" * (-1))) outf="P.dat"
+extract name="Pm" min(curve(v."anode", (v."anode" * i."anode")))
+extract name="Vm" x.val from curve(v."anode", (v."anode" * i."anode")) where y.val=$"Pm"
+extract name="Im" $"Pm" / $"Vm"
+extract name="FF" $"Pm" / ($"Jsc" * $"Voc") * 100
+extract name="Eff" (1e8 * $Pm / 0.1) * 100
+
+tonyplot P.dat
+
+# Spectral Response
+go atlas
+mesh infile=GaInP_GaInAs_Ge.str
+
+models fermi optr
+method newton itlimit=40 maxtraps=20
+output opt.int band.temp con.band val.band charge polar.charge band.param e.mobility h.mobility u.srh u.radiative u.auger permi
+
+solve init
+solve prev
+beam num=1 x.origin=0.5 y.origin=-1.0 angle=90.0
+
+solve init
+solve prev
+log outf=GaInP_GaInAs_Ge_spectral.log
+solve b1=1 beam=1 lambda=0.45 wstep=0.05 wfinal=3
+
+extract init infile="GaInP_GaInAs_Ge_spectral.log"
+extract name="IQE" curve(elect."optical wavelength", \-(i."anode") / elect."available photo current") outf="IQE.dat"
+extract name="EQE" curve(elect."optical wavelength", \-(i."anode") / elect."source photo current") outf="EQE.dat"
+extract name="EQE2" curve(elect."optical wavelength", \-(i."anode") / elect."source photo current" * elect."Absorption") outf="EQE2.dat"
+
+tonyplot -overlay IQE.dat EQE.dat EQE2.dat
+
+quit
